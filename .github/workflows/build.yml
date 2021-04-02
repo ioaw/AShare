@@ -6,7 +6,9 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-16.04
+
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -17,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install pkg
+      - name: Install "pkg"
         run: npm install -g pkg
 
       - name: Package Node.js project into an executable (linux_amd64)
