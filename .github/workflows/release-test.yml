@@ -42,7 +42,7 @@ jobs:
       - name: Install "pkg"
         run: npm install -g pkg
 
-      - name: Package Node.js project into an executable ("$PLATFORM_$ARCH")
+      - name: Package Node.js project into an executable (${{ matrix.platform }}_${{ matrix.arch }})
         run: |
           mkdir build_assets
           pkg . -t node14-$PLATFORM-$ARCH --output build_assets/$ARTIFACT_NAME
