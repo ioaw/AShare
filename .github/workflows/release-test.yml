@@ -34,16 +34,16 @@ jobs:
       - name: Set environment variables
         run: |
             echo "::set-output name=PLATFORM::$_PLATFORM"
-            # echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
+            echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
 
             echo "::set-output name=ARCH::$_ARCH"
-            # echo "ARCH=$_ARCH" >> $GITHUB_ENV
+            echo "ARCH=$_ARCH" >> $GITHUB_ENV
 
             echo "::set-output name=ARTIFACT_NAME::$_ARTIFACT_NAME"
-            # echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
+            echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
 
             echo "::set-output name=ASSET_NAME::$_ASSET_NAME"
-            # echo "ASSET_NAME=$_ASSET_NAME" >> $GITHUB_ENV
+            echo "ASSET_NAME=$_ASSET_NAME" >> $GITHUB_ENV
 
       - name: Use Node.js
         uses: actions/setup-node@v1
