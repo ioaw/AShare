@@ -1,3 +1,4 @@
+# Package project into executable and auto-upload binary release assets
 name: Release
 
 on:
