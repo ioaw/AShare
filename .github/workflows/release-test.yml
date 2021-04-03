@@ -22,14 +22,28 @@ jobs:
             asset_name: AShare_windows_amd64
 
     env:
-      PLATFORM: ${{ matrix.platform }}
-      ARCH: ${{ matrix.arch }}
-      ARTIFACT_NAME: ${{ matrix.artifact_name }}
-      ASSET_NAME: ${{ matrix.asset_name }}
+      _PLATFORM: ${{ matrix.platform }}
+      _ARCH: ${{ matrix.arch }}
+      _ARTIFACT_NAME: ${{ matrix.artifact_name }}
+      _ASSET_NAME: ${{ matrix.asset_name }}
 
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v2
+
+      - name: Set environment variables
+        run: |
+            echo "::set-output name=PLATFORM::$_PLATFORM"
+            echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
+
+            echo "::set-output name=ARCH::$_ARCH"
+            echo "ARCH=$_ARCH" >> $GITHUB_ENV
+
+            echo "::set-output name=ARTIFACT_NAME::$_ARTIFACT_NAME"
+            echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
+
+            echo "::set-output name=ASSET_NAME::$_ASSET_NAME"
+            echo "ASSET_NAME=$_ASSET_NAME" >> $GITHUB_ENV
 
       - name: Use Node.js
         uses: actions/setup-node@v1
