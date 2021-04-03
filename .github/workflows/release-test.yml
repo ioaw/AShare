@@ -11,6 +11,8 @@ jobs:
 
     strategy:
       matrix:
+        platform: [linux, win]
+        arch: [x64]
         include:
           - platform: linux
             artifact_name: AShare
@@ -18,6 +20,12 @@ jobs:
           - platform: win
             artifact_name: AShare.exe
             asset_name: AShare_windows_amd64
+
+    env:
+      PLATFORM: ${{ matrix.platform }}
+      ARCH: ${{ matrix.arch }}
+      ARTIFACT_NAME: ${{ matrix.artifact_name }}
+      ASSET_NAME: ${{ matrix.asset_name }}
 
     steps:
       - name: Checkout codebase
@@ -34,36 +42,32 @@ jobs:
       - name: Install "pkg"
         run: npm install -g pkg
 
-      - name: Package Node.js project into an executable (linux_amd64)
+      - name: Package Node.js project into an executable (PLATFORM_ARCH)
         run: |
           mkdir build_assets
-          pkg . -t node14-linux-x64 --output build_assets/AShare
-
-      - name: Package Node.js project into an executable (windows_amd64)
-        if: matrix.platform == 'win'
-        run: pkg . -t node14-win-x64 --output build_assets/AShare.exe
+          pkg . -t node14-PLATFORM-ARCH --output build_assets/ARTIFACT_NAME
 
       - name: Create archive files
         run: |
           mkdir release
-          if [ -f "build_assets/AShare" ]; then
-            tar -zcvf AShare_linux_amd64.tar.gz -C build_assets AShare
-            mv *.tar.gz release
-          elif [ -f "build_assets/AShare.exe" ]; then
-            zip -j AShare_windows_amd64.zip build_assets/AShare.exe
+          if [ PLATFORM = 'win' ]; then
+            zip -j ASSET_NAME.zip build_assets/ARTIFACT_NAME
             mv *.zip release
+          else
+            tar -zcvf ASSET_NAME.tar.gz -C build_assets ARTIFACT_NAME
+            mv *.tar.gz release
           fi
 
       - name: Upload binary files to Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.asset_name }}
-          path: build_assets/${{ matrix.artifact_name }}
+          name: ASSET_NAME
+          path: build_assets/ARTIFACT_NAME
 
       - name: Upload binary files to GitHub release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file_glob: true
-          file: release/${{ matrix.asset_name }}.*
-          tag: ${{ github.ref }}
+          file: release/ASSET_NAME.*
+          tag: v1.0.0
