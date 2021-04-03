@@ -59,16 +59,16 @@ jobs:
       - name: Package Node.js project into an executable ($_PLATFORM_$_ARCH)
         run: |
           mkdir build_assets
-          pkg . -t node14-${{ output.PLATFORM }}-${{ output.ARCH }} --output build_assets/${{ output.ARTIFACT_NAME }}
+          pkg . -t node14-${{ env.PLATFORM }}-${{ env.ARCH }} --env build_assets/${{ env.ARTIFACT_NAME }}
 
       - name: Create archive files
         run: |
           mkdir release
-          if [ ${{ output.PLATFORM }} = 'win' ]; then
-            zip -j ${{ output.ASSET_NAME }}.zip build_assets/${{ output.ARTIFACT_NAME }}
+          if [ ${{ env.PLATFORM }} = 'win' ]; then
+            zip -j ${{ env.ASSET_NAME }}.zip build_assets/${{ env.ARTIFACT_NAME }}
             mv *.zip release
           else
-            tar -zcvf ${{ output.ASSET_NAME }}.tar.gz -C build_assets ${{ output.ARTIFACT_NAME }}
+            tar -zcvf ${{ env.ASSET_NAME }}.tar.gz -C build_assets ${{ env.ARTIFACT_NAME }}
             mv *.tar.gz release
           fi
 
@@ -76,12 +76,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: $_ASSET_NAME
-          path: build_assets/${{ output.ARTIFACT_NAME }}
+          path: build_assets/${{ env.ARTIFACT_NAME }}
 
       - name: Upload binary files to GitHub release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file_glob: true
-          file: release/${{ output.ASSET_NAME }}.*
+          file: release/${{ env.ASSET_NAME }}.*
           tag: v1.0.0
