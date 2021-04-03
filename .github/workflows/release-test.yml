@@ -56,7 +56,7 @@ jobs:
       - name: Install "pkg"
         run: npm install -g pkg
 
-      - name: Package Node.js project into an executable ($_PLATFORM_$_ARCH)
+      - name: Package Node.js project into an executable ($_PLATFORM)
         run: |
           mkdir build_assets
           pkg . -t node14-${{ env.PLATFORM }}-${{ env.ARCH }} --env build_assets/${{ env.ARTIFACT_NAME }}
