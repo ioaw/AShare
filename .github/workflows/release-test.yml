@@ -1,0 +1,69 @@
+name: Release
+
+on:
+  push:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-16.04
+
+    strategy:
+      matrix:
+        include:
+          - platform: linux
+            artifact_name: AShare
+            asset_name: AShare_linux_amd64
+          - platform: win
+            artifact_name: AShare.exe
+            asset_name: AShare_windows_amd64
+
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install "pkg"
+        run: npm install -g pkg
+
+      - name: Package Node.js project into an executable (linux_amd64)
+        run: |
+          mkdir build_assets
+          pkg . -t node14-linux-x64 --output build_assets/AShare
+
+      - name: Package Node.js project into an executable (windows_amd64)
+        if: matrix.platform == 'win'
+        run: pkg . -t node14-win-x64 --output build_assets/AShare.exe
+
+      - name: Create archive files
+        run: |
+          mkdir release
+          if [ -f "build_assets/AShare" ]; then
+            tar -zcvf AShare_linux_amd64.tar.gz -C build_assets AShare
+            mv *.tar.gz release
+          elif [ -f "build_assets/AShare.exe" ]; then
+            zip -j AShare_windows_amd64.zip build_assets/AShare.exe
+            mv *.zip release
+          fi
+
+      - name: Upload binary files to Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.asset_name }}.zip
+          path: build_assets/${{ matrix.artifact_name }}
+
+      - name: Upload binary files to GitHub release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file_glob: true
+          file: release/*.*
+          tag: ${{ github.ref }}
