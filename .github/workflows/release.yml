@@ -13,15 +13,27 @@ jobs:
 
     strategy:
       matrix:
-        platform: [linux, win]
-        arch: [x64]
+        platform: [linux, win, alpine, macos]
+        arch: [x64, x86]
+        exclude:
+          # excludes x86 on alpine and macos
+          - arch: x86
+            platform: alpine
+          - arch: x86
+            platform: macos
         include:
           - platform: linux
             artifact_name: AShare
-            asset_name: AShare_linux_amd64
+            asset_name: AShare_${{ matrix.platform }}_${{ matrix.arch }}
           - platform: win
             artifact_name: AShare.exe
-            asset_name: AShare_windows_amd64
+            asset_name: AShare_${{ matrix.platform }}_${{ matrix.arch }}
+          - platform: alpine
+            artifact_name: AShare
+            asset_name: AShare_${{ matrix.platform }}_${{ matrix.arch }}
+          - platform: macos
+            artifact_name: AShare
+            asset_name: AShare_${{ matrix.platform }}_${{ matrix.arch }}
 
     env:
       _PLATFORM: ${{ matrix.platform }}
@@ -35,16 +47,9 @@ jobs:
 
       - name: Set environment variables
         run: |
-          # echo "::set-output name=PLATFORM::$_PLATFORM"
           echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
-
-          # echo "::set-output name=ARCH::$_ARCH"
           echo "ARCH=$_ARCH" >> $GITHUB_ENV
-
-          # echo "::set-output name=ARTIFACT_NAME::$_ARTIFACT_NAME"
           echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
-
-          # echo "::set-output name=ASSET_NAME::$_ASSET_NAME"
           echo "ASSET_NAME=$_ASSET_NAME" >> $GITHUB_ENV
 
       - name: Use Node.js
@@ -86,5 +91,5 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file_glob: true
           file: release/${{ env.ASSET_NAME }}.*
-          tag: v1.0.0
+          tag: v0.01
           overwrite: true
