@@ -82,7 +82,7 @@ jobs:
       - name: Package Node.js project into an executable (${{ matrix.platform }}_${{ matrix.arch }})
         run: |
           mkdir build_assets
-          pkg . -t node12-${{ env.PLATFORM }}-${{ env.ARCH }} --output build_assets/${{ env.ARTIFACT_NAME }}
+          pkg . -t node6-${{ env.PLATFORM }}-${{ env.ARCH }} --output build_assets/${{ env.ARTIFACT_NAME }}
 
       - name: Create archive files
         run: |
