@@ -22,18 +22,33 @@ jobs:
           - arch: x86
             platform: macos
         include:
+          # linux x64, x86
           - platform: linux
+            arch: x64
             artifact_name: AShare
-            asset_name: AShare_${{ matrix.platform }}_${{ matrix.arch }}
+            asset_name: AShare_linux_x64
+          - platform: linux
+            arch: x86
+            artifact_name: AShare
+            asset_name: AShare_linux_x86
+          # win x64, x86
           - platform: win
+            arch: x64
             artifact_name: AShare.exe
-            asset_name: AShare_${{ matrix.platform }}_${{ matrix.arch }}
+            asset_name: AShare_win_x64
+          - platform: win
+            arch: x86
+            artifact_name: AShare.exe
+            asset_name: AShare_win_x86
+          # other architectures
           - platform: alpine
+            arch: x64
             artifact_name: AShare
-            asset_name: AShare_${{ matrix.platform }}_${{ matrix.arch }}
+            asset_name: AShare_alpine_x64
           - platform: macos
+            arch: x64
             artifact_name: AShare
-            asset_name: AShare_${{ matrix.platform }}_${{ matrix.arch }}
+            asset_name: AShare_macos_x64
 
     env:
       _PLATFORM: ${{ matrix.platform }}
