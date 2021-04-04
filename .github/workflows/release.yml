@@ -77,7 +77,7 @@ jobs:
         run: npm install
 
       - name: Install "pkg"
-        run: npm install -g pkg
+        run: npm install -g pkg@4.3.8
 
       - name: Package Node.js project into an executable (${{ matrix.platform }}_${{ matrix.arch }})
         run: |
