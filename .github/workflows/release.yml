@@ -1,4 +1,4 @@
-# Test zip command on windows-latest runner with shell: bash
+# Test environment variables on ubuntu-16.04
 
 name: Test
 
@@ -7,37 +7,17 @@ on:
     branches: [ main ]
 
 jobs:
-  test-zip-command:
+  test-environment-variables:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-16.04
 
     steps:
-      - name: Install "zip"
-        run: |
-          mkdir -p ./zip/{zip-bin,bzip2-bin}
-          curl -LOJ http://downloads.sourceforge.net/gnuwin32/zip-3.0-bin.zip --output-dir zip
-          curl -LOJ http://downloads.sourceforge.net/gnuwin32/bzip2-1.0.5-bin.zip --output-dir zip
-          unzip -q zip/zip*.zip -d zip/zip-bin
-          unzip -q zip/bzip2*.zip -d zip/bzip2-bin
-          mv zip/zip-bin/bin/zip.exe zip
-          mv zip/bzip2-bin/bin/bzip2.dll zip
-        shell: bash
-
       - name: Set environment variables
         run: |
-          git --version
-          echo $PWD
-          ls -al $PWD/zip
-          export PATH=$PATH:$PWD/zip
-          echo $PATH
-        shell: bash
+          export TEST_VAR=hello
+          echo $TEST_VAR
 
-      - name: Test command -> zip
+      - name: show environment variables
         run: |
-          export PATH=$PATH:$PWD/zip
-          zip --help
-        shell: bash
-      - name: Test command -> zip (x2)
-        run: |
-          zip --help
-        shell: bash
+          echo $PWD
+          echo $TEST_VAR
