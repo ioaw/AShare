@@ -33,5 +33,7 @@ jobs:
         shell: bash
 
       - name: Test command -> zip
-        run: zip --help
+        run: |
+          export PATH=$PATH:$PWD/zip
+          zip --help
         shell: bash
