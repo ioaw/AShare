@@ -1,13 +1,13 @@
 # Test zip command on windows-latest runner with shell: bash
 
-name: Release
+name: Test
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  test zip command:
+  test-zip-command:
 
     runs-on: windows-latest
 
