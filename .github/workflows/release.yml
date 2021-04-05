@@ -16,21 +16,19 @@ jobs:
         platform: [linux, win, alpine, macos]
         arch: [x64, x86]
         exclude:
-          # excludes x86 on alpine and macos
+          # excludes x86 on linux, alpine and macos
+          - arch: x86
+            platform: linux
           - arch: x86
             platform: alpine
           - arch: x86
             platform: macos
         include:
-          # linux: x64, x86
+          # linux: x64
           - platform: linux
             arch: x64
             artifact_name: AShare
             asset_name: AShare_linux_x64
-          - platform: linux
-            arch: x86
-            artifact_name: AShare
-            asset_name: AShare_linux_x86
           # win: x64, x86
           - platform: win
             arch: x64
@@ -61,8 +59,20 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v2
 
+      - name: Install "zip"
+        run: |
+          mkdir -p ./zip/{zip-bin,bzip2-bin}
+          curl -LOJ http://downloads.sourceforge.net/gnuwin32/zip-3.0-bin.zip --output-dir zip
+          curl -LOJ http://downloads.sourceforge.net/gnuwin32/bzip2-1.0.5-bin.zip --output-dir zip
+          unzip -q zip/zip*.zip -d zip/zip-bin
+          unzip -q zip/bzip2*.zip -d zip/bzip2-bin
+          mv zip/zip-bin/bin/zip.exe zip
+          mv zip/bzip2-bin/bin/bzip2.dll zip
+        shell: bash
+
       - name: Set environment variables
         run: |
+          export PATH=$PATH:$PWD/zip
           echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
           echo "ARCH=$_ARCH" >> $GITHUB_ENV
           echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
