@@ -1,4 +1,4 @@
-# Package Node.js project into executable and auto-upload binary release assets.
+# Package Node.js project into executable and auto-upload binary release assets
 
 name: Release
 
@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-16.04
+    runs-on: windows-latest
 
     strategy:
       matrix:
