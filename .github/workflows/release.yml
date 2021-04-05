@@ -25,9 +25,10 @@ jobs:
 
       - name: Set environment variables
         run: |
+          git --version
+          echo $PWD
           ls -al $PWD/zip
           export PATH=$PATH:$PWD/zip
-          echo $PWD
           echo $PATH
         shell: bash
 
