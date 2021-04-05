@@ -26,6 +26,7 @@ jobs:
       - name: Set environment variables
         run: |
           export PATH=$PATH:$PWD/zip
+          echo $PATH
         shell: bash
 
       - name: Test command -> zip
