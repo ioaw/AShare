@@ -37,3 +37,7 @@ jobs:
           export PATH=$PATH:$PWD/zip
           zip --help
         shell: bash
+      - name: Test command -> zip (x2)
+        run: |
+          zip --help
+        shell: bash
