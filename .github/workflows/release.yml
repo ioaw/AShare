@@ -25,6 +25,7 @@ jobs:
 
       - name: Set environment variables
         run: |
+          ls -al
           export PATH=$PATH:$PWD/zip
           echo $PWD
           echo $PATH
