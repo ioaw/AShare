@@ -27,10 +27,8 @@ jobs:
         run: |
           echo $PWD
           ls -al $PWD/zip
-          zip --help
           echo "export PATH=\"$PATH:$PWD/zip\"" >> ~/.bash_profile
           echo $PATH
-          zip --help
         shell: bash
 
       - name: Test command -> zip
