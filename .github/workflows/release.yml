@@ -28,6 +28,7 @@ jobs:
           echo $PWD
           ls -al $PWD/zip
           echo "export PATH=\"$PATH:$PWD/zip\"" >> ~/.bash_profile
+          source ~/.bash_profile
           echo $PATH
         shell: bash
 
