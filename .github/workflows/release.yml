@@ -24,43 +24,17 @@ jobs:
             platform: alpine
           - arch: x86
             platform: macos
-        include:
-          # linux: x64
-          - platform: linux
-            arch: x64
-            artifact_name: AShare
-            asset_name: AShare_linux_x64
-          # win: x64, x86
-          - platform: win
-            arch: x64
-            artifact_name: AShare.exe
-            asset_name: AShare_win_x64
-          - platform: win
-            arch: x86
-            artifact_name: AShare.exe
-            asset_name: AShare_win_x86
-          # other architectures
-          - platform: alpine
-            arch: x64
-            artifact_name: AShare
-            asset_name: AShare_alpine_x64
-          - platform: macos
-            arch: x64
-            artifact_name: AShare
-            asset_name: AShare_macos_x64
       fail-fast: false
 
     env:
       _PLATFORM: ${{ matrix.platform }}
       _ARCH: ${{ matrix.arch }}
-      _ARTIFACT_NAME: ${{ matrix.artifact_name }}
-      _ASSET_NAME: ${{ matrix.asset_name }}
 
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v2
 
-      - name: Install "zip"
+      - name: Install "zip" for Windows
         run: |
           mkdir -p ./zip/{zip-bin,bzip2-bin}
           curl -LOJ http://downloads.sourceforge.net/gnuwin32/zip-3.0-bin.zip --output-dir zip
@@ -73,9 +47,18 @@ jobs:
 
       - name: Set environment variables
         run: |
+          # Set "zip"
           export _PATH=$PATH:$PWD/zip
           echo "PATH=$_PATH" >> $GITHUB_ENV
 
+          # Set "artifact name" and "asset name"
+          if [ $_PLATFORM = 'win' ]; then
+            export _ARTIFACT_NAME=AShare.exe
+          else
+            export _ARTIFACT_NAME=AShare
+          fi
+
+          export _ASSET_NAME="AShare_${_PLATFORM}_${_ARCH}"
           echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
           echo "ARCH=$_ARCH" >> $GITHUB_ENV
           echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
