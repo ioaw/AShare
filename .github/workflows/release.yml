@@ -34,5 +34,7 @@ jobs:
 
       - name: Test command -> zip
         run: |
+          echo $PATH
+          cat ~/.bash_profile
           zip --help
         shell: bash
