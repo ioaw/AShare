@@ -35,7 +35,7 @@ jobs:
 
       - name: Test command -> zip
         run: |
-          echo $PATH
-          echo $GITHUB_ENV
+          echo start0$PATH
+          echo start1$GITHUB_ENV
           zip --help
         shell: bash
