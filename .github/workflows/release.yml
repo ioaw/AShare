@@ -27,6 +27,7 @@ jobs:
       fail-fast: false
 
     env:
+      _APP: AShare
       _PLATFORM: ${{ matrix.platform }}
       _ARCH: ${{ matrix.arch }}
 
@@ -53,12 +54,12 @@ jobs:
 
           # Set "artifact name" and "asset name"
           if [ $_PLATFORM = 'win' ]; then
-            export _ARTIFACT_NAME=AShare.exe
+            export _ARTIFACT_NAME="${_APP}.exe"
           else
-            export _ARTIFACT_NAME=AShare
+            export _ARTIFACT_NAME=$_APP
           fi
 
-          export _ASSET_NAME="AShare_${_PLATFORM}_${_ARCH}"
+          export _ASSET_NAME="${_APP}_${_PLATFORM}_${_ARCH}"
           echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
           echo "ARCH=$_ARCH" >> $GITHUB_ENV
           echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
