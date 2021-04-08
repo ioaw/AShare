@@ -36,6 +36,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install "zip" for Windows
+        if: ${{ runner.os == 'Windows' }}
         run: |
           mkdir -p ./zip/{zip-bin,bzip2-bin}
           curl -LOJ http://downloads.sourceforge.net/gnuwin32/zip-3.0-bin.zip --output-dir zip
@@ -44,14 +45,14 @@ jobs:
           unzip -q zip/bzip2*.zip -d zip/bzip2-bin
           mv zip/zip-bin/bin/zip.exe zip
           mv zip/bzip2-bin/bin/bzip2.dll zip
+
+          # Add "zip" to PATH
+          export _PATH=$PATH:$PWD/zip
+          echo "PATH=$_PATH" >> $GITHUB_ENV
         shell: bash
 
       - name: Set environment variables
         run: |
-          # Set "zip"
-          export _PATH=$PATH:$PWD/zip
-          echo "PATH=$_PATH" >> $GITHUB_ENV
-
           # Set "artifact name" and "asset name"
           if [ $_PLATFORM = 'win' ]; then
             export _ARTIFACT_NAME="${_APP}.exe"
@@ -60,8 +61,9 @@ jobs:
           fi
 
           export _ASSET_NAME="${_APP}_${_PLATFORM}_${_ARCH}"
-          echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
-          echo "ARCH=$_ARCH" >> $GITHUB_ENV
+
+          # echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
+          # echo "ARCH=$_ARCH" >> $GITHUB_ENV
           echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
           echo "ASSET_NAME=$_ASSET_NAME" >> $GITHUB_ENV
         shell: bash
@@ -82,13 +84,13 @@ jobs:
       - name: Package Node.js project into an executable (${{ matrix.platform }}_${{ matrix.arch }})
         run: |
           mkdir build_assets
-          pkg . -t node14-${{ env.PLATFORM }}-${{ env.ARCH }} --output build_assets/${{ env.ARTIFACT_NAME }}
+          pkg . -t node14-$_PLATFORM-$_ARCH --output build_assets/${{ env.ARTIFACT_NAME }}
         shell: bash
 
       - name: Create archive files
         run: |
           mkdir release
-          if [ ${{ env.PLATFORM }} = 'win' ]; then
+          if [ $_PLATFORM = 'win' ]; then
             zip -j ${{ env.ASSET_NAME }}.zip build_assets/${{ env.ARTIFACT_NAME }}
             mv *.zip release
           else
