@@ -52,7 +52,7 @@ jobs:
       - name: Set environment variables
         run: |
           # Set "artifact name" and "asset name"
-          if [ $PLATFORM = 'win' ]; then
+          if [ "$PLATFORM" = "win" ]; then
             export _ARTIFACT_NAME="${APP}.exe"
           else
             export _ARTIFACT_NAME=$APP
