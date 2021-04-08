@@ -10,7 +10,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-16.04
 
     strategy:
       matrix:
@@ -27,9 +27,9 @@ jobs:
       fail-fast: false
 
     env:
-      _APP: AShare
-      _PLATFORM: ${{ matrix.platform }}
-      _ARCH: ${{ matrix.arch }}
+      APP: AShare
+      PLATFORM: ${{ matrix.platform }}
+      ARCH: ${{ matrix.arch }}
 
     steps:
       - name: Checkout codebase
@@ -38,13 +38,11 @@ jobs:
       - name: Install "zip" for Windows
         if: ${{ runner.os == 'Windows' }}
         run: |
-          mkdir -p ./zip/{zip-bin,bzip2-bin}
+          mkdir zip
           curl -LOJ http://downloads.sourceforge.net/gnuwin32/zip-3.0-bin.zip --output-dir zip
           curl -LOJ http://downloads.sourceforge.net/gnuwin32/bzip2-1.0.5-bin.zip --output-dir zip
-          unzip -q zip/zip*.zip -d zip/zip-bin
-          unzip -q zip/bzip2*.zip -d zip/bzip2-bin
-          mv zip/zip-bin/bin/zip.exe zip
-          mv zip/bzip2-bin/bin/bzip2.dll zip
+          unzip -jq zip/zip*.zip "bin/zip.exe" -d zip
+          unzip -jq zip/bzip2*.zip "bin/bzip2.dll" -d zip
 
           # Add "zip" to PATH
           export _PATH=$PATH:$PWD/zip
@@ -54,16 +52,14 @@ jobs:
       - name: Set environment variables
         run: |
           # Set "artifact name" and "asset name"
-          if [ $_PLATFORM = 'win' ]; then
-            export _ARTIFACT_NAME="${_APP}.exe"
+          if [ $PLATFORM = 'win' ]; then
+            export _ARTIFACT_NAME="${APP}.exe"
           else
-            export _ARTIFACT_NAME=$_APP
+            export _ARTIFACT_NAME=$APP
           fi
 
-          export _ASSET_NAME="${_APP}_${_PLATFORM}_${_ARCH}"
+          export _ASSET_NAME="${APP}_${PLATFORM}_${ARCH}"
 
-          # echo "PLATFORM=$_PLATFORM" >> $GITHUB_ENV
-          # echo "ARCH=$_ARCH" >> $GITHUB_ENV
           echo "ARTIFACT_NAME=$_ARTIFACT_NAME" >> $GITHUB_ENV
           echo "ASSET_NAME=$_ASSET_NAME" >> $GITHUB_ENV
         shell: bash
@@ -84,18 +80,16 @@ jobs:
       - name: Package Node.js project into an executable (${{ matrix.platform }}_${{ matrix.arch }})
         run: |
           mkdir build_assets
-          pkg . -t node14-$_PLATFORM-$_ARCH --output build_assets/${{ env.ARTIFACT_NAME }}
+          pkg . -t node14-${{ env.PLATFORM }}-${{ env.ARCH }} --output build_assets/${{ env.ARTIFACT_NAME }}
         shell: bash
 
       - name: Create archive files
         run: |
           mkdir release
-          if [ $_PLATFORM = 'win' ]; then
-            zip -j ${{ env.ASSET_NAME }}.zip build_assets/${{ env.ARTIFACT_NAME }}
-            mv *.zip release
+          if [ "${{ env.PLATFORM }}" = "win" ]; then
+            zip -j release/${{ env.ASSET_NAME }}.zip build_assets/${{ env.ARTIFACT_NAME }}
           else
-            tar -zcvf ${{ env.ASSET_NAME }}.tar.gz -C build_assets ${{ env.ARTIFACT_NAME }}
-            mv *.tar.gz release
+            tar -zcvf release/${{ env.ASSET_NAME }}.tar.gz -C build_assets ${{ env.ARTIFACT_NAME }}
           fi
         shell: bash
 
