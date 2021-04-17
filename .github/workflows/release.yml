@@ -28,7 +28,7 @@ jobs:
 
     env:
       APP: AShare
-      NODE_RANGE: 14
+      NODE_RANGE: node14
       PLATFORM: ${{ matrix.platform }}
       ARCH: ${{ matrix.arch }}
 
@@ -81,7 +81,7 @@ jobs:
       - name: Package Node.js project into an executable (${{ matrix.platform }}_${{ matrix.arch }})
         run: |
           mkdir build_assets
-          pkg . -t {{ env.NODE_RANGE }}-${{ env.PLATFORM }}-${{ env.ARCH }} --output build_assets/${{ env.ARTIFACT_NAME }}
+          pkg . -t ${{ env.NODE_RANGE }}-${{ env.PLATFORM }}-${{ env.ARCH }} --output build_assets/${{ env.ARTIFACT_NAME }}
         shell: bash
 
       - name: Create archive files
